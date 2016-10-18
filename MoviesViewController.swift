@@ -87,7 +87,7 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
             } else {
                 // Network Error
                 self.networkErrorView.isHidden = false
-                self.networkErrorView.frame.size.height = 70
+                self.networkErrorView.frame.size.height = 45
                 MBProgressHUD.hide(for: self.view, animated: true)
                 self.refreshControl.endRefreshing()
             }
