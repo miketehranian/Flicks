@@ -45,6 +45,9 @@ class DetailViewController: UIViewController {
             return
         }
         
+        // Load the low resolution image first and
+        // in the completion handler animate from the low
+        // resolution image to the high resolution image
         self.posterImageView.setImageWith(
             URLRequest(url: URL(string: smallImageUrl!)!),
             placeholderImage: UIImage(named: "video"),

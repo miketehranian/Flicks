@@ -24,7 +24,6 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
     var filteredData: [NSDictionary]?
     var searchInProgress = false
     
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -34,10 +33,12 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
         tableView.dataSource = self
         tableView.delegate = self
         
+        // Load the table model
         networkRequest()
-        //    let refreshControl = UIRefreshControl()
+        
+        // Attach the refresh control to the table view
         refreshControl = UIRefreshControl()
-        refreshControl.addTarget(self, action: #selector(didRefresh(refreshControl:)), for: UIControlEvents.valueChanged)
+        refreshControl.addTarget(self, action: #selector(networkRequest), for: UIControlEvents.valueChanged)
         tableView.insertSubview(refreshControl, at: 0)
         
         // create the search bar programatically since you won't be
@@ -53,11 +54,8 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
         
         searchBar.delegate = self
         
+        // Initialize the filter movies list with the full list of movies
         filteredData = movies
-    }
-    
-    func didRefresh(refreshControl: UIRefreshControl) {
-        networkRequest()
     }
     
     func networkRequest() {
@@ -96,7 +94,10 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if searchInProgress{
+        
+        // If the user is currently using the search bar pick the number of rows from
+        // the filtered results. If not, pick the number of rows from the full list of movies.
+        if searchInProgress {
             if let movies = filteredData {
                 return movies.count
             }
@@ -108,6 +109,8 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
     }
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        
+        // Filter movies based on the title
         self.filteredData = searchText.isEmpty ? movies : self.movies?.filter({
             (result) -> Bool in
             let title = result["title"] as! String
@@ -143,7 +146,9 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
         
         var movie: NSDictionary!
         
-        if searchInProgress || false {
+        // If the user is currently using the search bar pick the movie from the filtered
+        // results. If not, pick the movie from the full list of movies.
+        if searchInProgress {
             movie = filteredData![indexPath.row]
         } else {
             movie = movies![indexPath.row]
@@ -166,11 +171,7 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
         backgroundView.backgroundColor = UIColor.white
         cell.selectedBackgroundView = backgroundView
         
-        
-        //        cell.titleLabel.sizeToFit()
         cell.overviewLabel.sizeToFit()
-        
-        // print ("row \(indexPath.row) ")
         
         return cell
     }
@@ -180,6 +181,9 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
         let indexPath = tableView.indexPath(for: cell)
         
         var movie: NSDictionary!
+        
+        // If the user is currently using the search bar pick the movie from the filtered
+        // results. If not, pick the movie from the full list of movies.
         if searchInProgress {
             movie = filteredData![indexPath!.row]
         } else {
